@@ -1,4 +1,4 @@
-package it.alby02.myapplication.ui.theme
+package it.alby02.secretsanta.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
