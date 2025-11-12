@@ -1,18 +1,33 @@
+/*
+ * Licensed under the EUPL, Version 1.2.
+ * You may obtain a copy of the Licence at:
+ * https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
+ */
+
 package it.alby02.secretsanta
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.ui.Modifier
+import it.alby02.secretsanta.ui.navigation.AppNavigation
 import it.alby02.secretsanta.ui.theme.SecretSantaTheme
 
-// A (hypothetical) activity to show the main app screen after login
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             SecretSantaTheme {
-                Text("Welcome to the Main App!")
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    // AppNavigation is now the "Fragment Switcher"
+                    AppNavigation()
+                }
             }
         }
     }
