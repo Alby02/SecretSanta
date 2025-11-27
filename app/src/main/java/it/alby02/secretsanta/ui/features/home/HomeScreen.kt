@@ -4,6 +4,8 @@
  * https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
  */
 
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package it.alby02.secretsanta.ui.features.home
 
 import androidx.compose.animation.AnimatedVisibility
@@ -33,6 +35,7 @@ import it.alby02.secretsanta.ui.theme.SecretSantaTheme
 @Composable
 fun HomeScreen(
     onNavigateToGroup: (String) -> Unit,
+    onLogout: () -> Unit,
     viewModel: HomeViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()

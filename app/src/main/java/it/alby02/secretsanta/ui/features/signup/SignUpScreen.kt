@@ -6,164 +6,127 @@
 
 package it.alby02.secretsanta.ui.features.signup
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import it.alby02.secretsanta.ui.theme.SecretSantaTheme
 
-// UI State data class
+// --- STATE ---
 data class SignUpUiState(
     val email: String = "",
     val password: String = "",
     val confirmPassword: String = "",
+    val username: String = "",
     val isLoading: Boolean = false,
-    val loadingMessage: String = "",
+    val isSignUpSuccessful: Boolean = false,
     val errorMessage: String? = null,
-    val isSignUpSuccessful: Boolean = false
+    val loadingMessage: String? = null,
 )
 
+// --- SCREEN ---
 @Composable
 fun SignUpScreen(
     uiState: SignUpUiState,
     onEmailChange: (String) -> Unit,
+    onUsernameChange: (String) -> Unit, // Added this
     onPasswordChange: (String) -> Unit,
     onConfirmPasswordChange: (String) -> Unit,
     onSignUpClick: () -> Unit,
     onLoginClick: () -> Unit
 ) {
-    var passwordVisible by remember { mutableStateOf(false) }
-    var confirmPasswordVisible by remember { mutableStateOf(false) }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(text = "Create Account", style = androidx.compose.material3.MaterialTheme.typography.headlineMedium)
 
-    Surface(modifier = Modifier.fillMaxSize()) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(32.dp)
-                .verticalScroll(rememberScrollState()), // Make screen scrollable
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "Create Account",
-                style = MaterialTheme.typography.headlineLarge,
-                color = MaterialTheme.colorScheme.primary
-            )
-            Text(
-                text = "Your password is your master key.",
-                style = MaterialTheme.typography.bodyMedium
-            )
+        Spacer(modifier = Modifier.height(32.dp))
 
-            Spacer(modifier = Modifier.height(32.dp))
+        OutlinedTextField(
+            value = uiState.email,
+            onValueChange = onEmailChange,
+            label = { Text("Email") },
+            modifier = Modifier.fillMaxWidth()
+        )
 
-            // Email Field
-            OutlinedTextField(
-                value = uiState.email,
-                onValueChange = onEmailChange,
-                modifier = Modifier.fillMaxWidth(),
-                label = { Text("Email") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                singleLine = true,
-                isError = uiState.errorMessage != null
-            )
+        Spacer(modifier = Modifier.height(16.dp))
 
+        OutlinedTextField(
+            value = uiState.username,
+            onValueChange = onUsernameChange, // Connected this
+            label = { Text("Username") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedTextField(
+            value = uiState.password,
+            onValueChange = onPasswordChange,
+            label = { Text("Password") },
+            visualTransformation = PasswordVisualTransformation(),
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedTextField(
+            value = uiState.confirmPassword,
+            onValueChange = onConfirmPasswordChange,
+            label = { Text("Confirm Password") },
+            visualTransformation = PasswordVisualTransformation(),
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        if (uiState.isLoading) {
             Spacer(modifier = Modifier.height(16.dp))
-
-            // Password Field
-            OutlinedTextField(
-                value = uiState.password,
-                onValueChange = onPasswordChange,
-                modifier = Modifier.fillMaxWidth(),
-                label = { Text("Password") },
-                singleLine = true,
-                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                isError = uiState.errorMessage != null
-            )
-
+            CircularProgressIndicator()
+            uiState.loadingMessage?.let {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = it)
+            }
+        } else {
+            uiState.errorMessage?.let {
+                Text(text = it, color = androidx.compose.material3.MaterialTheme.colorScheme.error)
+            }
             Spacer(modifier = Modifier.height(16.dp))
-
-            // Confirm Password Field
-            OutlinedTextField(
-                value = uiState.confirmPassword,
-                onValueChange = onConfirmPasswordChange,
-                modifier = Modifier.fillMaxWidth(),
-                label = { Text("Confirm Password") },
-                singleLine = true,
-                visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                isError = uiState.errorMessage != null
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Loading Indicator and Error Message
-            if (uiState.isLoading) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    CircularProgressIndicator()
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = uiState.loadingMessage,
-                        color = MaterialTheme.colorScheme.primary,
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                }
-            } else {
-                uiState.errorMessage?.let {
-                    Text(
-                        text = it,
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                }
+            Button(onClick = onSignUpClick, modifier = Modifier.fillMaxWidth()) {
+                Text("Sign Up")
             }
+        }
 
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Sign Up Button
-            Button(
-                onClick = onSignUpClick,
-                modifier = Modifier.fillMaxWidth(),
-                enabled = !uiState.isLoading
-            ) {
-                Text("Sign Up & Create Keys")
-            }
-
-            // Login Button
-            TextButton(
-                onClick = onLoginClick,
-                modifier = Modifier.fillMaxWidth(),
-                enabled = !uiState.isLoading
-            ) {
-                Text("Already have an account? Login")
-            }
+        TextButton(onClick = onLoginClick) {
+            Text("Already have an account? Log in")
         }
     }
 }
 
-@Preview(showBackground = true)
 @Composable
+@Preview(showBackground = true)
 fun SignUpScreenPreview() {
     SecretSantaTheme {
         SignUpScreen(
-            uiState = SignUpUiState(
-                isLoading = false,
-                errorMessage = null
-            ),
+            uiState = SignUpUiState(),
             onEmailChange = {},
+            onUsernameChange = {}, // Connected this
             onPasswordChange = {},
             onConfirmPasswordChange = {},
             onSignUpClick = {},
@@ -172,17 +135,35 @@ fun SignUpScreenPreview() {
     }
 }
 
-@Preview(showBackground = true)
 @Composable
+@Preview(showBackground = true)
 fun SignUpScreenLoadingPreview() {
     SecretSantaTheme {
         SignUpScreen(
             uiState = SignUpUiState(
                 isLoading = true,
-                loadingMessage = "Generating keys...",
-                errorMessage = null
+                loadingMessage = "Signing up..."
             ),
             onEmailChange = {},
+            onUsernameChange = {}, // Connected this
+            onPasswordChange = {},
+            onConfirmPasswordChange = {},
+            onSignUpClick = {},
+            onLoginClick = {}
+        )
+    }
+}
+
+@Composable
+@Preview(showBackground = true)
+fun SignUpScreenErrorPreview() {
+    SecretSantaTheme {
+        SignUpScreen(
+            uiState = SignUpUiState(
+                errorMessage = "An error occurred"
+            ),
+            onEmailChange = {},
+            onUsernameChange = {}, // Connected this
             onPasswordChange = {},
             onConfirmPasswordChange = {},
             onSignUpClick = {},

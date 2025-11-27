@@ -27,7 +27,6 @@ import it.alby02.secretsanta.ui.theme.SecretSantaTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GroupDetailScreen(
-    groupId: String, // We'll need this to instantiate the ViewModel
     onNavigateBack: () -> Unit,
     viewModel: GroupDetailViewModel = viewModel() // Compose handles the factory
 ) {

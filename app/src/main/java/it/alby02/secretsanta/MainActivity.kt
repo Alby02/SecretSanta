@@ -13,20 +13,20 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import it.alby02.secretsanta.ui.navigation.AppNavigation
+import it.alby02.secretsanta.ui.navigation.AppNavHost
 import it.alby02.secretsanta.ui.theme.SecretSantaTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             SecretSantaTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    // AppNavigation is now the "Fragment Switcher"
-                    AppNavigation()
+                    AppNavHost()
                 }
             }
         }

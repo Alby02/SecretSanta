@@ -140,12 +140,29 @@ fun LoginScreenPreview() {
 
 @Preview(showBackground = true)
 @Composable
+fun LoginScreenErrorPreview() {
+    SecretSantaTheme {
+        LoginScreen(
+            uiState = LoginUiState(
+                isLoading = false,
+                errorMessage = "Restoring your keys..."
+            ),
+            onEmailChange = {},
+            onPasswordChange = {},
+            onLoginClick = {},
+            onSignUpClick = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
 fun LoginScreenLoadingPreview() {
     SecretSantaTheme {
         LoginScreen(
             uiState = LoginUiState(
                 isLoading = true,
-                errorMessage = "Restoring your keys..."
+                errorMessage = null
             ),
             onEmailChange = {},
             onPasswordChange = {},
