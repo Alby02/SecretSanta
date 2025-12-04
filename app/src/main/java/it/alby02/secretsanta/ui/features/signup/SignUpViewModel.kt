@@ -46,6 +46,10 @@ class SignUpViewModel(application: Application) : AndroidViewModel(application) 
         _uiState.update { it.copy(confirmPassword = confirmPassword) }
     }
 
+    fun onUsernameChange(username: String) {
+        _uiState.update { it.copy(username = username) }
+    }
+
     fun onSignUpClicked() {
         val state = _uiState.value
         val email = state.email

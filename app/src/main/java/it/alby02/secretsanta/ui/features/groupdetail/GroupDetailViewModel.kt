@@ -12,7 +12,7 @@ import androidx.lifecycle.viewModelScope
 import it.alby02.secretsanta.data.model.Group
 import it.alby02.secretsanta.data.repository.GroupRepositoryImpl
 import it.alby02.secretsanta.domain.repository.GroupRepository
-import it.alby02.secretsanta.ui.navigation.AppDestinations
+import it.alby02.secretsanta.ui.navigation.HomeDestinations
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -31,7 +31,7 @@ class GroupDetailViewModel(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val groupId: String = savedStateHandle.get<String>(AppDestinations.GROUP_ID_ARG)!!
+    private val groupId: String = savedStateHandle.get<String>(HomeDestinations.Group.ARG_GROUP_ID)!!
 
     private val _uiState = MutableStateFlow(GroupDetailUiState())
     val uiState: StateFlow<GroupDetailUiState> = _uiState.asStateFlow()

@@ -23,7 +23,7 @@ object HomeDestinations {
         private const val ROUTE_PREFIX = "group"
         const val ARG_GROUP_ID = "groupId"
 
-        val route = "$ROUTE_PREFIX/{$ARG_GROUP_ID}"
+        const val ROUTE = "$ROUTE_PREFIX/{$ARG_GROUP_ID}"
 
         val arguments = listOf(
             navArgument(ARG_GROUP_ID) { type = NavType.StringType }
@@ -44,7 +44,7 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController, onLogout: () -> 
             )
         }
         composable(
-            route = HomeDestinations.Group.route,
+            route = HomeDestinations.Group.ROUTE,
             arguments = HomeDestinations.Group.arguments
         ) {
             GroupDetailScreen ( onNavigateBack = {
