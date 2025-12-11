@@ -6,10 +6,13 @@
 
 package it.alby02.secretsanta.data.model
 
+import com.google.firebase.firestore.DocumentId
+
 // Firestore User Data Class
 data class UserProfile(
-    val email: String,
-    val publicKey: String,
+    @DocumentId val id: String = "",
+    val email: String = "",
+    val publicKey: String = "",
     val encryptedPrivateKey: String,
     val pbkdfSalt: String
 )

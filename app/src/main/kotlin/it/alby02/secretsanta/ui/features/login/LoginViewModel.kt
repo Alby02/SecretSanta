@@ -6,14 +6,13 @@
 
 package it.alby02.secretsanta.ui.features.login
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
-import com.google.firebase.Firebase
 import it.alby02.secretsanta.data.repository.UserRepositoryImpl
 import it.alby02.secretsanta.data.security.CryptoManager
 import it.alby02.secretsanta.domain.usecase.LoginUseCase
@@ -23,7 +22,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class LoginViewModel(application: Application) : AndroidViewModel(application) {
+class LoginViewModel() : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
@@ -34,7 +33,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
         // In a real app, you would use Hilt/Dagger for dependency injection
         val auth: FirebaseAuth = Firebase.auth
         val firestore: FirebaseFirestore = Firebase.firestore
-        val cryptoManager = CryptoManager(application.applicationContext)
+        val cryptoManager = CryptoManager()
         val userRepository = UserRepositoryImpl(firestore)
         loginUseCase = LoginUseCase(auth, userRepository, cryptoManager)
     }

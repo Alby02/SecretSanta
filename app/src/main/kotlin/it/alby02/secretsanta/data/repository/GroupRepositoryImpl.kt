@@ -12,6 +12,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.snapshots
 import com.google.firebase.firestore.toObject
 import it.alby02.secretsanta.data.model.Group
+import it.alby02.secretsanta.data.model.UserProfile
 import it.alby02.secretsanta.domain.repository.GroupRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -190,7 +191,7 @@ class GroupRepositoryImpl(
         doc.getString("masterList") ?: throw Exception("Master list not found")
     }
 
-    override fun getUsers(userIds: List<String>): Flow<List<it.alby02.secretsanta.data.model.UserProfile>> {
+    override fun getUsers(userIds: List<String>): Flow<List<UserProfile>> {
         if (userIds.isEmpty()) return flow { emit(emptyList()) }
         // Firestore 'in' query is limited to 10 items. We need to chunk it.
         // For simplicity in this demo, we'll assume < 10 or just fetch all (inefficient) or chunk it.
@@ -198,11 +199,11 @@ class GroupRepositoryImpl(
         
         return flow {
              val chunks = userIds.chunked(10)
-             val allUsers = mutableListOf<it.alby02.secretsanta.data.model.UserProfile>()
+             val allUsers = mutableListOf<UserProfile>()
              
              for (chunk in chunks) {
                  val snapshot = firestore.collection("usersPublic").whereIn(com.google.firebase.firestore.FieldPath.documentId(), chunk).get().await()
-                 allUsers.addAll(snapshot.toObject(it.alby02.secretsanta.data.model.UserProfile::class.java)) // This might fail if toObject isn't perfect with IDs, let's map manually if needed or trust toObject with @DocumentId if used
+                 allUsers.addAll(snapshot.toObjects(UserProfile::class.java)) // This might fail if toObject isn't perfect with IDs, let's map manually if needed or trust toObject with @DocumentId if used
              }
              emit(allUsers)
         }

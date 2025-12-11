@@ -1,8 +1,14 @@
+/*
+ * Licensed under the EUPL, Version 1.2.
+ * You may obtain a copy of the Licence at:
+ * https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
+ */
+
 package it.alby02.secretsanta.domain.usecase
 
 import it.alby02.secretsanta.data.security.CryptoManager
 import it.alby02.secretsanta.domain.repository.GroupRepository
-import android.util.Base64
+import kotlinx.coroutines.flow.first
 import javax.crypto.spec.SecretKeySpec
 
 class ViewAssignmentUseCase(
@@ -30,9 +36,9 @@ class ViewAssignmentUseCase(
         // Since `getUsers` returns a Flow, we can't just call it synchronously easily without `first()`.
         // But `invoke` is suspend.
         
-        val receiverProfile = kotlinx.coroutines.flow.first(users).firstOrNull()
+        val receiverProfile = users.first().firstOrNull()
             ?: return "Unknown User ($receiverId)"
             
-        return receiverProfile.username
+        return receiverProfile.id
     }
 }

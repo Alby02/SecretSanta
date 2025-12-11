@@ -6,7 +6,6 @@
 
 package it.alby02.secretsanta.data.security
 
-import android.content.Context
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Base64
@@ -22,7 +21,7 @@ import javax.crypto.spec.PBEKeySpec
 import javax.crypto.spec.SecretKeySpec
 import javax.security.auth.x500.X500Principal
 
-class CryptoManager(private val context: Context) {
+class CryptoManager() {
 
     private val KEYSTORE_PROVIDER = "AndroidKeyStore"
     private val KEYSTORE_ALIAS = "SECRET_SANTA_USER_KEY"

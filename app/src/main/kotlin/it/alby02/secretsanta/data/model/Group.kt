@@ -15,5 +15,8 @@ data class Group(
     val adminId: String = "",
     val joinCode: String = "",
     val members: List<String> = emptyList(),
+    val rules: List<Rule> = emptyList(),
     val state: String = "pending"
 )
+
+data class Rule (val giverId: String, val receiverId: String)
