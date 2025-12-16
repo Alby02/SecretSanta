@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.gms.google.services)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.ksp)
 }
 
 kotlin{
@@ -68,7 +69,6 @@ dependencies {
     // LIFECYCLE
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
-    //implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.lifecycle.viewmodel.savedstate)
     implementation(libs.androidx.lifecycle.viewmodel.navigation3)
 
@@ -77,6 +77,15 @@ dependencies {
     implementation(libs.androidx.navigation3.ui)
     implementation(libs.androidx.compose.material3.adaptive.navigation3)
     implementation(libs.kotlinx.serialization.json)
+
+    // KOIN
+    implementation(platform(libs.koin.bom))
+    implementation(libs.koin.core)
+    implementation(libs.koin.android)
+    implementation(libs.koin.compose)
+    testImplementation(libs.koin.test)
+    implementation(libs.koin.annotations)
+    ksp(libs.koin.ksp.compiler)
 
     // FIREBASE
     implementation(platform(libs.firebase.bom))
@@ -89,4 +98,7 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+}
+ksp {
+    arg("KOIN_CONFIG_CHECK","true")
 }

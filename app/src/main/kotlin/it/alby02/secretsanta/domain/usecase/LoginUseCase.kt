@@ -6,21 +6,21 @@
 
 package it.alby02.secretsanta.domain.usecase
 
-import com.google.firebase.auth.FirebaseAuth
 import it.alby02.secretsanta.data.security.CryptoManager
+import it.alby02.secretsanta.domain.repository.AuthRepository
 import it.alby02.secretsanta.domain.repository.UserRepository
-import kotlinx.coroutines.tasks.await
+import org.koin.core.annotation.Factory
 
+@Factory
 class LoginUseCase(
-    private val auth: FirebaseAuth,
+    private val authRepository: AuthRepository,
     private val userRepository: UserRepository,
     private val cryptoManager: CryptoManager
 ) {
 
     suspend operator fun invoke(email: String, password: String): Result<Unit> {
         return try {
-            val authResult = auth.signInWithEmailAndPassword(email, password).await()
-            val userId = authResult.user?.uid ?: throw Exception("User ID not found.")
+            val userId = authRepository.login(email, password).getOrThrow()
 
             if (!cryptoManager.doesPrivateKeyExist()) {
                 val userLoginData = userRepository.getUserLoginData(userId)

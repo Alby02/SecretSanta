@@ -7,7 +7,9 @@
 package it.alby02.secretsanta.domain.usecase
 
 import it.alby02.secretsanta.domain.repository.GroupRepository
+import org.koin.core.annotation.Factory
 
+@Factory
 class JoinGroupUseCase(private val groupRepository: GroupRepository) {
 
     suspend operator fun invoke(joinCode: String): Result<Unit> {

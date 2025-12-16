@@ -33,55 +33,26 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
-import com.google.firebase.firestore.firestore
 import it.alby02.secretsanta.data.model.Group
-import it.alby02.secretsanta.data.repository.GroupRepositoryImpl
-import it.alby02.secretsanta.data.security.CryptoManager
-import it.alby02.secretsanta.domain.usecase.AdminKeyRecoveryUseCase
-import it.alby02.secretsanta.domain.usecase.InitiateMatchingUseCase
-import it.alby02.secretsanta.domain.usecase.ViewAssignmentUseCase
 import it.alby02.secretsanta.ui.theme.SecretSantaTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GroupDetailScreen(
-    groupId: String,
     onNavigateBack: () -> Unit,
-    // Dependency injection would be better here
+    uiState: GroupDetailUiState,
+    startMatching: () -> Unit = {},
+    viewAssignment: () -> Unit = {},
+    initiateRecovery: () -> Unit = {},
+    contributeToRecovery: () -> Unit = {},
+    finalizeRecovery: () -> Unit
 ) {
-    val viewModel: GroupDetailViewModel = viewModel(
-        factory = object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                val firestore = Firebase.firestore
-                val auth = Firebase.auth
-                val repo = GroupRepositoryImpl(firestore, auth)
-                val crypto = CryptoManager()
-                
-                return GroupDetailViewModel(
-                    groupId = groupId,
-                    groupRepository = repo,
-                    initiateMatchingUseCase = InitiateMatchingUseCase(repo, crypto),
-                    adminKeyRecoveryUseCase = AdminKeyRecoveryUseCase(repo, crypto),
-                    viewAssignmentUseCase = ViewAssignmentUseCase(repo, crypto),
-                    cryptoManager = crypto
-                ) as T
-            }
-        }
-    )
-
-    val uiState by viewModel.uiState.collectAsState()
     val currentUser = Firebase.auth.currentUser
 
     Scaffold(
@@ -101,7 +72,7 @@ fun GroupDetailScreen(
                 CircularProgressIndicator()
             }
         } else if (uiState.group != null) {
-            val group = uiState.group!!
+            val group = uiState.group
             val isAdmin = group.adminId == currentUser?.uid
             
             Column(modifier = Modifier.padding(paddingValues)) {
@@ -114,7 +85,7 @@ fun GroupDetailScreen(
                 // Actions
                 Column(modifier = Modifier.padding(16.dp).fillMaxWidth()) {
                     if (uiState.errorMessage != null) {
-                        Text(uiState.errorMessage!!, color = MaterialTheme.colorScheme.error)
+                        Text(uiState.errorMessage, color = MaterialTheme.colorScheme.error)
                         Spacer(modifier = Modifier.height(8.dp))
                     }
 
@@ -122,7 +93,7 @@ fun GroupDetailScreen(
                         "pending" -> {
                             if (isAdmin) {
                                 Button(
-                                    onClick = { viewModel.startMatching() },
+                                    onClick = startMatching,
                                     enabled = !uiState.isMatching && group.members.size >= 2,
                                     modifier = Modifier.fillMaxWidth()
                                 ) {
@@ -139,7 +110,7 @@ fun GroupDetailScreen(
                         "assigned", "completed" -> {
                             if (uiState.assignment == null) {
                                 Button(
-                                    onClick = { viewModel.viewAssignment() },
+                                    onClick = viewAssignment,
                                     modifier = Modifier.fillMaxWidth()
                                 ) {
                                     Text("View My Assignment")
@@ -151,7 +122,7 @@ fun GroupDetailScreen(
                                 ) {
                                     Column(modifier = Modifier.padding(16.dp)) {
                                         Text("You are the Secret Santa for:", style = MaterialTheme.typography.titleMedium)
-                                        Text(uiState.assignment!!, style = MaterialTheme.typography.headlineMedium)
+                                        Text(uiState.assignment, style = MaterialTheme.typography.headlineMedium)
                                     }
                                 }
                             }
@@ -160,7 +131,7 @@ fun GroupDetailScreen(
                             
                             if (isAdmin && group.state == "assigned") {
                                 OutlinedButton(
-                                    onClick = { viewModel.initiateRecovery() },
+                                    onClick = initiateRecovery,
                                     modifier = Modifier.fillMaxWidth()
                                 ) {
                                     Text("Initiate Key Recovery (Emergency)")
@@ -179,7 +150,7 @@ fun GroupDetailScreen(
                                 )
                                 Spacer(modifier = Modifier.height(8.dp))
                                 Button(
-                                    onClick = { viewModel.finalizeRecovery() },
+                                    onClick = finalizeRecovery,
                                     enabled = (uiState.recoveryProgress + 1) >= uiState.recoveryThreshold && !uiState.isRecovering,
                                     modifier = Modifier.fillMaxWidth()
                                 ) {
@@ -191,7 +162,7 @@ fun GroupDetailScreen(
                                 }
                             } else {
                                 Button(
-                                    onClick = { viewModel.contributeToRecovery() },
+                                    onClick = contributeToRecovery,
                                     modifier = Modifier.fillMaxWidth()
                                 ) {
                                     Text("Contribute My Share")

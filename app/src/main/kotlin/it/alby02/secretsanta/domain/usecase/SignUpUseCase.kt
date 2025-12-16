@@ -6,14 +6,15 @@
 
 package it.alby02.secretsanta.domain.usecase
 
-import com.google.firebase.auth.FirebaseAuth
 import it.alby02.secretsanta.data.model.UserAccountData
 import it.alby02.secretsanta.data.security.CryptoManager
+import it.alby02.secretsanta.domain.repository.AuthRepository
 import it.alby02.secretsanta.domain.repository.UserRepository
-import kotlinx.coroutines.tasks.await
+import org.koin.core.annotation.Factory
 
+@Factory
 class SignUpUseCase(
-    private val auth: FirebaseAuth,
+    private val authRepository: AuthRepository,
     private val userRepository: UserRepository,
     private val cryptoManager: CryptoManager
 ) {
@@ -21,8 +22,7 @@ class SignUpUseCase(
     suspend operator fun invoke(email: String, password: String, username: String): Result<Unit> {
         return try {
             // 1. Create user in Firebase Auth
-            val authResult = auth.createUserWithEmailAndPassword(email, password).await()
-            val userId = authResult.user?.uid ?: throw Exception("User ID not found after creation.")
+            val userId = authRepository.signUp(email, password).getOrThrow()
 
             // 2. Generate new key pair and store private key in Android Keystore for the session
             val publicKeyString = cryptoManager.generateAndStoreNewKeyPair()
@@ -43,7 +43,7 @@ class SignUpUseCase(
             Result.success(Unit)
         } catch (e: Exception) {
             // If any step fails, delete the partially created Firebase Auth user to allow a clean retry.
-            auth.currentUser?.delete()?.await()
+            authRepository.deleteCurrentUser()
             Result.failure(e)
         }
     }

@@ -8,11 +8,7 @@ package it.alby02.secretsanta.ui.features.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.auth.auth
-import com.google.firebase.firestore.firestore
-import com.google.firebase.Firebase
 import it.alby02.secretsanta.data.model.Group
-import it.alby02.secretsanta.data.repository.GroupRepositoryImpl
 import it.alby02.secretsanta.domain.repository.GroupRepository
 import it.alby02.secretsanta.domain.usecase.CreateGroupUseCase
 import it.alby02.secretsanta.domain.usecase.JoinGroupUseCase
@@ -22,6 +18,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.koin.android.annotation.KoinViewModel
 
 data class HomeUiState(
     val isLoading: Boolean = true,
@@ -32,23 +29,17 @@ data class HomeUiState(
     val errorMessage: String? = null
 )
 
-class HomeViewModel : ViewModel() {
+@KoinViewModel
+class HomeViewModel(
+    private val groupRepository: GroupRepository,
+    private val createGroupUseCase: CreateGroupUseCase,
+    private val joinGroupUseCase: JoinGroupUseCase,
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
-    private val groupRepository: GroupRepository
-    private val createGroupUseCase: CreateGroupUseCase
-    private val joinGroupUseCase: JoinGroupUseCase
-
     init {
-        // In a real app, you would use Hilt/Dagger for dependency injection
-        val auth = Firebase.auth
-        val firestore = Firebase.firestore
-        groupRepository = GroupRepositoryImpl(firestore, auth)
-        createGroupUseCase = CreateGroupUseCase(groupRepository)
-        joinGroupUseCase = JoinGroupUseCase(groupRepository)
-
         loadGroups()
     }
 

@@ -9,6 +9,7 @@ package it.alby02.secretsanta.data.security
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Base64
+import org.koin.core.annotation.Single
 import java.security.KeyPairGenerator
 import java.security.KeyStore
 import java.security.PrivateKey
@@ -21,6 +22,7 @@ import javax.crypto.spec.PBEKeySpec
 import javax.crypto.spec.SecretKeySpec
 import javax.security.auth.x500.X500Principal
 
+@Single
 class CryptoManager() {
 
     private val KEYSTORE_PROVIDER = "AndroidKeyStore"

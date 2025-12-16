@@ -1,13 +1,14 @@
 package it.alby02.secretsanta.domain.usecase
 
 import it.alby02.secretsanta.data.model.Group
-import it.alby02.secretsanta.data.model.UserProfile
 import it.alby02.secretsanta.data.security.CryptoManager
 import it.alby02.secretsanta.domain.repository.AssignmentTransactionData
 import it.alby02.secretsanta.domain.repository.GroupRepository
 import it.alby02.secretsanta.domain.repository.KeyShareTransactionData
 import kotlinx.coroutines.flow.first
+import org.koin.core.annotation.Factory
 
+@Factory
 class InitiateMatchingUseCase(
     private val groupRepository: GroupRepository,
     private val cryptoManager: CryptoManager

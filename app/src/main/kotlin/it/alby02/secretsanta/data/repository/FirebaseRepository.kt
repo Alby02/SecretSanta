@@ -6,9 +6,10 @@
 
 package it.alby02.secretsanta.data.repository
 
-import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.snapshots
 import com.google.firebase.firestore.toObject
 import it.alby02.secretsanta.data.model.Group
@@ -20,13 +21,13 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
+import org.koin.core.annotation.Single
 
+@Single
 @OptIn(ExperimentalCoroutinesApi::class)
-class GroupRepositoryImpl(
-    private val firestore: FirebaseFirestore,
-    private val auth: FirebaseAuth
-) : GroupRepository {
-
+class FirebaseRepository() : GroupRepository {
+    private val firestore = Firebase.firestore
+    private val auth = Firebase.auth
     private val currentUser by lazy { auth.currentUser ?: throw IllegalStateException("User not logged in") }
 
     override fun getMyGroups(): Flow<List<Group>> {

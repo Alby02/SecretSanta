@@ -1,12 +1,14 @@
 package it.alby02.secretsanta.domain.usecase
 
+import android.util.Base64
 import it.alby02.secretsanta.data.security.CryptoManager
 import it.alby02.secretsanta.domain.repository.GroupRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import android.util.Base64
+import org.koin.core.annotation.Factory
 
+@Factory
 class AdminKeyRecoveryUseCase(
     private val groupRepository: GroupRepository,
     private val cryptoManager: CryptoManager

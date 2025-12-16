@@ -25,6 +25,8 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.koin.android.annotation.KoinViewModel
+import org.koin.core.annotation.InjectedParam
 
 data class GroupDetailUiState(
     val isLoading: Boolean = true,
@@ -38,8 +40,9 @@ data class GroupDetailUiState(
     val recoveryThreshold: Int = 0
 )
 
+@KoinViewModel
 class GroupDetailViewModel(
-    private val groupId: String,
+    @InjectedParam private val groupId: String,
     private val groupRepository: GroupRepository,
     private val initiateMatchingUseCase: InitiateMatchingUseCase,
     private val adminKeyRecoveryUseCase: AdminKeyRecoveryUseCase,

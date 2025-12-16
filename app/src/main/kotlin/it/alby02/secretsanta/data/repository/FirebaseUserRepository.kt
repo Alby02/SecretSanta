@@ -6,13 +6,17 @@
 
 package it.alby02.secretsanta.data.repository
 
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.firestore
 import it.alby02.secretsanta.data.model.UserAccountData
 import it.alby02.secretsanta.data.model.UserLoginData
 import it.alby02.secretsanta.domain.repository.UserRepository
 import kotlinx.coroutines.tasks.await
+import org.koin.core.annotation.Single
 
-class UserRepositoryImpl(private val firestore: FirebaseFirestore) : UserRepository {
+@Single
+class FirebaseUserRepository() : UserRepository {
+    private val firestore = Firebase.firestore
 
     override suspend fun getUserLoginData(userId: String): UserLoginData {
         val document = firestore.collection("usersLogin").document(userId).get().await()

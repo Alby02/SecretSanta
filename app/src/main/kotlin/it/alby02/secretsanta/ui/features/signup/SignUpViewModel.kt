@@ -8,35 +8,21 @@ package it.alby02.secretsanta.ui.features.signup
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.Firebase
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.auth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.firestore
-import it.alby02.secretsanta.data.repository.UserRepositoryImpl
-import it.alby02.secretsanta.data.security.CryptoManager
 import it.alby02.secretsanta.domain.usecase.SignUpUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.koin.android.annotation.KoinViewModel
 
-class SignUpViewModel() : ViewModel() {
+@KoinViewModel
+class SignUpViewModel(
+    private val signUpUseCase: SignUpUseCase
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SignUpUiState())
     val uiState: StateFlow<SignUpUiState> = _uiState.asStateFlow()
-
-    private val signUpUseCase: SignUpUseCase
-
-    init {
-        // In a real app, you would use Hilt/Dagger for dependency injection
-        val auth: FirebaseAuth = Firebase.auth
-        val firestore: FirebaseFirestore = Firebase.firestore
-        val cryptoManager = CryptoManager()
-        val userRepository = UserRepositoryImpl(firestore)
-        signUpUseCase = SignUpUseCase(auth, userRepository, cryptoManager)
-    }
 
     fun onEmailChange(email: String) {
         _uiState.update { it.copy(email = email) }

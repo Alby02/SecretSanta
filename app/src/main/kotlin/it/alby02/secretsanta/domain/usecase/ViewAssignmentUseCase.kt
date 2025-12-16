@@ -9,8 +9,10 @@ package it.alby02.secretsanta.domain.usecase
 import it.alby02.secretsanta.data.security.CryptoManager
 import it.alby02.secretsanta.domain.repository.GroupRepository
 import kotlinx.coroutines.flow.first
+import org.koin.core.annotation.Factory
 import javax.crypto.spec.SecretKeySpec
 
+@Factory
 class ViewAssignmentUseCase(
     private val groupRepository: GroupRepository,
     private val cryptoManager: CryptoManager
