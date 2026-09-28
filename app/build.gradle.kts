@@ -1,28 +1,19 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.gms.google.services)
     alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.ksp)
-}
-
-kotlin{
-    compilerOptions {
-        jvmTarget = JvmTarget.JVM_11
-    }
+    alias(libs.plugins.koin.compiler)
 }
 
 android {
     namespace = "it.alby02.secretsanta"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "it.alby02.secretsanta"
         minSdk = 33
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 1
         versionName = "1.0"
 
@@ -50,13 +41,11 @@ android {
 dependencies {
     // ANDROIDX CORE
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
     implementation(libs.androidx.activity.compose)
 
     // COMPOSE BOM
     val composeBom = platform(libs.androidx.compose.bom)
     implementation(composeBom)
-    testImplementation(composeBom)
     androidTestImplementation(composeBom)
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
@@ -80,12 +69,12 @@ dependencies {
 
     // KOIN
     implementation(platform(libs.koin.bom))
-    implementation(libs.koin.core)
     implementation(libs.koin.android)
     implementation(libs.koin.compose)
+    implementation(libs.koin.compose.viewmodel)
+    implementation(libs.koin.compose.navigation3)
     testImplementation(libs.koin.test)
     implementation(libs.koin.annotations)
-    ksp(libs.koin.ksp.compiler)
 
     // FIREBASE
     implementation(platform(libs.firebase.bom))
@@ -98,7 +87,4 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
-}
-ksp {
-    arg("KOIN_CONFIG_CHECK","true")
 }

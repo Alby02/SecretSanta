@@ -13,7 +13,7 @@ import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Configuration
 import org.koin.core.annotation.KoinApplication
 import org.koin.core.annotation.Module
-import org.koin.ksp.generated.startKoin
+import org.koin.core.context.startKoin
 
 @KoinApplication
 class SecretSantaApp : Application() {
