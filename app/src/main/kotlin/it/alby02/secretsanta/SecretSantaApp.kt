@@ -9,25 +9,17 @@ package it.alby02.secretsanta
 import android.app.Application
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
-import org.koin.core.annotation.ComponentScan
-import org.koin.core.annotation.Configuration
 import org.koin.core.annotation.KoinApplication
-import org.koin.core.annotation.Module
-import org.koin.core.context.startKoin
+import org.koin.plugin.module.dsl.startKoin
 
-@KoinApplication
+@KoinApplication(modules = [AppModule::class])
 class SecretSantaApp : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        startKoin {
+        startKoin<SecretSantaApp> {
             androidLogger()
             androidContext(this@SecretSantaApp)
         }
     }
 }
-
-@Module
-@ComponentScan("it.alby02.secretsanta")
-@Configuration
-class AppModule()

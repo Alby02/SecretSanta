@@ -48,11 +48,11 @@ class LoginViewModel(
 
             result.onSuccess {
                 _uiState.update { it.copy(isLoading = false, isLoginSuccessful = true) }
-            }.onFailure {
+            }.onFailure { exception ->
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        errorMessage = "Login failed: ${it.errorMessage}"
+                        errorMessage = "Login failed: ${exception.message}"
                     )
                 }
             }

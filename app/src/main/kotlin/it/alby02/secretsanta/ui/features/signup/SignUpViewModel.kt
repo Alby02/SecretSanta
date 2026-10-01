@@ -64,11 +64,11 @@ class SignUpViewModel(
 
             result.onSuccess {
                 _uiState.update { it.copy(isLoading = false, isSignUpSuccessful = true) }
-            }.onFailure {
+            }.onFailure { exception ->
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        errorMessage = "Sign-up failed: ${it.errorMessage}"
+                        errorMessage = "Sign-up failed: ${exception.message}"
                     )
                 }
             }

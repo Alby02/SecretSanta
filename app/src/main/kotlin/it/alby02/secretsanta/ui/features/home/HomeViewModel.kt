@@ -82,8 +82,8 @@ class HomeViewModel(
                     // Dialog is dismissed, and list will auto-update thanks to the flow
                     _uiState.update { it.copy(showCreateDialog = false) }
                 }
-                .onFailure {
-                    _uiState.update { it.copy(errorMessage = it.errorMessage, showCreateDialog = false) }
+                .onFailure { error ->
+                    _uiState.update { it.copy(errorMessage = error.message, showCreateDialog = false) }
                 }
         }
     }
@@ -95,8 +95,8 @@ class HomeViewModel(
                     // Dialog is dismissed, and list will auto-update thanks to the flow
                     _uiState.update { it.copy(showJoinDialog = false) }
                 }
-                .onFailure {
-                    _uiState.update { it.copy(errorMessage = it.errorMessage, showJoinDialog = false) }
+                .onFailure { error ->
+                    _uiState.update { it.copy(errorMessage = error.message, showJoinDialog = false) }
                 }
         }
     }
